@@ -26,30 +26,29 @@ public class KeyGuardService extends Service {
         if (wifiManager.getWifiState() == WifiManager.WIFI_STATE_ENABLED) {
 
             Log.i("KeyGuardService", "connect info " + wifiManager.getConnectionInfo().getSSID());
-        	if(PrefencesUtil.getInstance(this).haveTrustWifi()) {
-        		  String save_wifi = PrefencesUtil.getInstance(this).getString(
-                          PrefencesUtil.PREFENCE_KEY, "");
-//                  save_wifi = save_wifi.substring(1, save_wifi.length() - 1);
-                  Log.i("KeyGuardService", "PREFENCE_KEY " + save_wifi);
-                  if (save_wifi.equals(wifiManager.getConnectionInfo().getSSID())) {
-                      Log.d("KeyGuardService", "wifi disableKeyGuard");
+            if (PrefencesUtil.getInstance().isTrustWifi(wifiManager.getConnectionInfo().getSSID())) {
+                Log.d("KeyGuardService", "wifi disableKeyGuard");
+                KeyGuardUtil.getInstance().disableKeyGuard();
+            } else {
+                Log.d("KeyGuardService", "wifi reEnableKeyGuard");
+                KeyGuardUtil.getInstance().reEnableKeyGuard();
 
-                      KeyGuardUtil.getInstance(this).disableKeyGuard();
-                  } else {
-                      Log.d("KeyGuardService", "wifi reEnableKeyGuard");
+            }
 
-                      KeyGuardUtil.getInstance(this).reEnableKeyGuard();
-                  }
-
-        	}
-          
         } else {
             Log.d("KeyGuardService", "wifi unable");
 
-            KeyGuardUtil.getInstance(this).reEnableKeyGuard();
+            KeyGuardUtil.getInstance().reEnableKeyGuard();
         }
 
-        return super.onStartCommand(intent, flags, startId);
+        return super.onStartCommand(intent, START_STICKY, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.e("KeyGuardService", "onDestroy");
+
+        super.onDestroy();
     }
 
     @Override

@@ -8,19 +8,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
-// * @author [zWX232618/郑加波] 2015-3-31
+ * // * @author [zWX232618/郑加波] 2015-3-31
  */
 public class PrefencesUtil {
 
     public static final String PREFENCE_NAME = "Trust_Wifi";
-    public static final String PREFENCE_KEY = "Trust_Wifi_Key";
 
     private SharedPreferences mSharePres;
 
-    private static Context preContext;
-
     private PrefencesUtil() {
-        mSharePres = preContext.getApplicationContext().getSharedPreferences(PREFENCE_NAME,
+        mSharePres = MyApplication.getContext().getSharedPreferences(PREFENCE_NAME,
                 Context.MODE_PRIVATE);
     }
 
@@ -28,8 +25,7 @@ public class PrefencesUtil {
         static final PrefencesUtil INSTANCE = new PrefencesUtil();
     }
 
-    public static PrefencesUtil getInstance(Context context) {
-        preContext = context;
+    public static PrefencesUtil getInstance() {
         return SysSharePresHolder.INSTANCE;
     }
 
@@ -41,14 +37,26 @@ public class PrefencesUtil {
         String value = mSharePres.getString(key, def);
         return value;
     }
-    
-    public boolean haveTrustWifi() {
-        String value = mSharePres.getString(PREFENCE_KEY, "");
-        return !("".equals(value));
+
+    public boolean isTrustWifi(String ssid) {
+        return mSharePres.contains(removeQuotes(ssid));
     }
-    
-    public void removeTustWifi() {
-    	mSharePres.edit().clear().commit();
-    	
+
+    public void addWifi(String ssid) {
+        mSharePres.edit().putBoolean(removeQuotes(ssid), true).commit();
+    }
+
+    public String removeQuotes(String ssid) {
+        String key = ssid;
+        if (ssid.startsWith("\"")) {
+            key = ssid.substring(1, ssid.length() - 1);
+        }
+        // Log.i("key ======== ", key);
+
+        return key;
+    }
+
+    public void removeWifi(String ssid) {
+        mSharePres.edit().remove(removeQuotes(ssid)).commit();
     }
 }

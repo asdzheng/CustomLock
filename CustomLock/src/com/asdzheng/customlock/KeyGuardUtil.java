@@ -18,10 +18,9 @@ public class KeyGuardUtil {
     static KeyguardManager manager;
     static KeyguardLock lock;
 
-    static Context keyGuardContext;
-
     private KeyGuardUtil() {
-        manager = (KeyguardManager) keyGuardContext.getSystemService(Context.KEYGUARD_SERVICE);
+        manager = (KeyguardManager) MyApplication.getContext().getSystemService(
+                Context.KEYGUARD_SERVICE);
         lock = manager.newKeyguardLock(TRUST_WIFI);
     }
 
@@ -29,8 +28,7 @@ public class KeyGuardUtil {
         static final KeyGuardUtil INSTANCE = new KeyGuardUtil();
     }
 
-    public static KeyGuardUtil getInstance(Context context) {
-        keyGuardContext = context;
+    public static KeyGuardUtil getInstance() {
         return KeyGuardHolder.INSTANCE;
     }
 
@@ -41,4 +39,13 @@ public class KeyGuardUtil {
     public void reEnableKeyGuard() {
         lock.reenableKeyguard();
     }
+
+    public boolean isEnableKeyGuard() {
+        return manager.isKeyguardSecure();
+    }
+
+    public boolean isKeyGuardLocked() {
+        return manager.isKeyguardLocked();
+    }
+
 }
