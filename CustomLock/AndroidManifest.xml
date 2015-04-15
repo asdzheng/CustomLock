@@ -37,13 +37,14 @@
             >
         </service>
 
-        <receiver android:name="com.asdzheng.customlock.NetworkChangeReceiver" >
+        <receiver android:name="com.asdzheng.customlock.DiffStateReceiver" >
             <intent-filter>
                 <action android:name="android.net.wifi.supplicant.CONNECTION_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
                 <action android:name="android.net.wifi.STATE_CHANGE" />
                 <action android:name="android.net.wifi.RSSI_CHANGED" />
-                <action android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.ACTION_SHUTDOWN"/>
                 <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>

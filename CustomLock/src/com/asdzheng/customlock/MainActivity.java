@@ -4,64 +4,73 @@ package com.asdzheng.customlock;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.asdzheng.customlock.util.LogUtil;
+import com.asdzheng.customlock.util.WifiUtil;
+
 public class MainActivity extends Activity {
 
-    private WifiManager wifiManager;
-    List<ScanResult> rangeWifis;
-    SaveWifiAdapter adapter;
-    List<WifiConfiguration> saveWifis;
+    private WifiUtil wifiUtil;
+    private List<ScanResult> rangeWifis;
+    private SaveWifiAdapter adapter;
+    private List<WifiConfiguration> saveWifis;
 
-    ListView listView;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        init();
+        wifiUtil = WifiUtil.getInstance();
+
+        checkWifiHaveOpen();
     }
 
-    private void init() {
-        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        openWifi();
-        rangeWifis = wifiManager.getScanResults();
-        saveWifis = wifiManager.getConfiguredNetworks();
-
-        adapter = new SaveWifiAdapter(this, saveWifis, getScanResultSsids(rangeWifis));
-        listView = (ListView) findViewById(R.id.listView);
-
-        if (rangeWifis == null) {
-            Toast.makeText(this, "wifi未打开！", Toast.LENGTH_LONG).show();
+    private void checkWifiHaveOpen() {
+        if (wifiUtil.isWifiEnable()) {
+            initData();
         } else {
-            listView.setAdapter(adapter);
+            openWifi();
+            Toast.makeText(MainActivity.this, "请等待Wifi开启", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    initData();
+                }
+            }, 1500);
         }
+    }
+
+    private void initData() {
+        rangeWifis = wifiUtil.getScanResults();
+        saveWifis = wifiUtil.getWifiConfigNeworks();
+        listView = (ListView) findViewById(R.id.listView);
 
         Intent i = new Intent(this, KeyGuardService.class);
         startService(i);
+        adapter = new SaveWifiAdapter(this, saveWifis, getScanResultSsids(rangeWifis));
+        listView.setAdapter(adapter);
+
     }
 
     /**
      * 打开WIFI
      */
     private void openWifi() {
-        if (!wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(true);
-        }
-
+        wifiUtil.setWifiEnabled(true);
     }
 
     private List<String> getScanResultSsids(List<ScanResult> results) {
+
         List<String> ssids = new ArrayList<String>();
         for (ScanResult result : results) {
             ssids.add(result.SSID);
@@ -69,24 +78,9 @@ public class MainActivity extends Activity {
         return ssids;
     }
 
-    // @Override
-    // public void onItemClick(AdapterView<?> parent, View view, int position,
-    // long id) {
-    // WifiConfiguration trustWifi = wifis.get(position);
-    // PrefencesUtil.getInstance(this).putString(PrefencesUtil.PREFENCE_KEY,
-    // trustWifi.SSID);
-    //
-    // Toast.makeText(this, "信任wifi" + trustWifi.SSID,
-    // Toast.LENGTH_SHORT).show();
-    //
-    // Intent intent = new Intent(this, KeyGuardService.class);
-    // startService(intent);
-    //
-    // }
-
     @Override
     protected void onDestroy() {
-        Log.e("MainActivity", "onDestroy");
+        LogUtil.w("MainActivity", "onDestroy");
         super.onDestroy();
     }
 }
