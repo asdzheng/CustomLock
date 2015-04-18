@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_margin="10dp"
+    android:background="@drawable/selectable_background"
     android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal" >
 
@@ -12,7 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_weight="2"
-        android:padding="5dp"
+        android:layout_gravity="center_vertical"
         android:src="@drawable/wifi_less" />
 
     <TextView
@@ -26,18 +27,16 @@
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_weight="2"
         android:layout_margin="5dp"
-         >
+        android:layout_weight="2" >
 
         <com.asdzheng.customlock.view.ToggleButton
             android:id="@+id/tbtn_slide"
             android:layout_width="65dp"
             android:layout_height="30dp"
-            android:layout_centerInParent="true" >
+            android:layout_centerInParent="true"
+            >
         </com.asdzheng.customlock.view.ToggleButton>
-        
-        
     </RelativeLayout>
 
     <!--
@@ -48,6 +47,7 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/textView"
         android:paddingLeft="50dp"
-        android:text="TextView" />    -->
+        android:text="TextView" />
+    -->
 
 </LinearLayout>

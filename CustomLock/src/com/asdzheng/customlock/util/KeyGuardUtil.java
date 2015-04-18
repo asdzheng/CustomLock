@@ -37,22 +37,14 @@ public class KeyGuardUtil {
         return keyGuardUtil;
     }
 
-    public void disableKeyGuard() {
+    public synchronized void disableKeyGuard() {
         LogUtil.w("KeyGuardUtil ==== ", " disableKeyGuard !!!");
         lock.disableKeyguard();
     }
 
-    public void reEnableKeyGuard() {
+    public synchronized void reEnableKeyGuard() {
         LogUtil.w("KeyGuardUtil ==== ", " reenableKeyguard !!!");
         lock.reenableKeyguard();
-    }
-
-    public boolean isEnableKeyGuard() {
-        return manager.isKeyguardSecure();
-    }
-
-    public boolean isKeyGuardLocked() {
-        return manager.isKeyguardLocked();
     }
 
     public boolean inKeyguardRestrictedInputMode() {

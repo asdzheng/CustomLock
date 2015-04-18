@@ -15,7 +15,7 @@ import com.asdzheng.customlock.MyApplication;
 public class PrefencesUtil {
 
     public static final String PREFENCE_NAME = "Trust_Wifi";
-    public static final String SYSTEM_SHUTDOWN = "Shutdown";
+    public static final String SYSTEM_SHUTDOWN = "Shutdown_10086";
 
     private SharedPreferences mSharePres;
 
@@ -57,6 +57,11 @@ public class PrefencesUtil {
         removeKey(removeQuotes(ssid));
     }
 
+    /**
+     * 系统异常出现的情况： 1 -->开机时就disableKeyguard，会出现按home键进入解锁界面， 然后隐藏解锁界面的 bug |||||
+     * 2 --> wifi状态改变，如移除wifi区域，也有可能出现reenable或者disable失效
+     * ||||||失效后需要重新显示锁屏界面，然后再隐藏
+     */
     public void systemException() {
         LogUtil.e("PrefencesUtil", "systemException");
 

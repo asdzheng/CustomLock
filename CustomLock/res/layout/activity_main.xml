@@ -1,17 +1,18 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"  
-    xmlns:tools="http://schemas.android.com/tools"  
-    android:layout_width="match_parent"  
-    android:layout_height="match_parent"  
-    android:paddingLeft="@dimen/activity_horizontal_margin"  
-    tools:context=".WifiListActivity" 
-    >  
-  
-    <ListView  
-        android:id="@+id/listView"  
-        android:layout_width="match_parent"  
-        android:layout_height="match_parent" 
-        android:focusable="false"
-        >  
-    </ListView>  
-  
-</RelativeLayout>  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_grey" >
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp"
+        android:padding="15dp"
+        android:scrollbarStyle="outsideOverlay"
+        tools:listitem="@layout/list_item_card" />
+
+</LinearLayout>

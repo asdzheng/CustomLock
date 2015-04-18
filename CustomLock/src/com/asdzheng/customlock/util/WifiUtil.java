@@ -58,4 +58,5 @@ public class WifiUtil {
     public void setWifiEnabled(boolean enabled) {
         wifiManager.setWifiEnabled(enabled);
     }
+
 }
