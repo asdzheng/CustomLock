@@ -37,9 +37,7 @@ public class KeyGuardService extends Service {
         presUtil = PrefencesUtil.getInstance();
 
         isLock = true;
-
         addScreenRecevier();
-
         super.onCreate();
 
     }

@@ -62,7 +62,7 @@ public class WifiFragment extends Fragment {
                 public void run() {
                     setupList();
                 }
-            }, 1500);
+            }, 2500);
         }
     }
 
