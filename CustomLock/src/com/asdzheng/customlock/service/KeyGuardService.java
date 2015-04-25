@@ -6,18 +6,18 @@ package com.asdzheng.customlock.service;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.os.IBinder;
 
-import com.asdzheng.customlock.receiver.DiffStateReceiver;
 import com.asdzheng.customlock.util.KeyGuardUtil;
 import com.asdzheng.customlock.util.LogUtil;
 import com.asdzheng.customlock.util.PrefencesUtil;
 import com.asdzheng.customlock.util.WifiUtil;
 
 /**
- * @author [zWX232618/郑加波] 2015-4-16
  */
 public class KeyGuardService extends Service {
 
@@ -26,9 +26,10 @@ public class KeyGuardService extends Service {
     private WifiUtil wifiUtil;
     private PrefencesUtil presUtil;
     private KeyGuardUtil keyGuadrdUtil;
-    private BroadcastReceiver stateRecevier;
 
     private boolean isLock;
+
+    private final Handler mHandler = new Handler();
 
     @Override
     public void onCreate() {
@@ -37,21 +38,17 @@ public class KeyGuardService extends Service {
         presUtil = PrefencesUtil.getInstance();
 
         isLock = true;
-        addScreenRecevier();
+        addUserPresentRecevier();
         super.onCreate();
-
     }
 
     /**
      * 点亮屏幕的的广播不能再AndroidMainfest里面注册，只能动态注册
      */
-    private void addScreenRecevier() {
-
+    private void addUserPresentRecevier() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREEN_ON);
-
-        stateRecevier = new DiffStateReceiver();
-        registerReceiver(stateRecevier, filter);
+        filter.addAction(Intent.ACTION_USER_PRESENT);
+        registerReceiver(userPresentReceiver, filter);
     }
 
     @Override
@@ -59,23 +56,12 @@ public class KeyGuardService extends Service {
 
         LogUtil.i(TAG, "service start !!");
 
-        if (presUtil.isSystemException()) {
-            // 每次出现异常情况都要手动解锁一次后才能继续使用。
-            if (Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
-                LogUtil.w(TAG, "ACTION_USER_PRESENT !!");
-
-                /**
-                 * 出现异常时disableKeyguard是作用的，需要等手动开锁后，重新显示解锁界面后，在隐藏，才有效果
-                 */
-                presUtil.systemNormal();
-                reEnableKeyGuard();
-                disableKeyGuard();
-            }
-            return super.onStartCommand(intent, flags, startId);
+        // 开机后必须先解锁一次，信任wifi才开启，不然会出现按home键跳到锁屏界面
+        if (!presUtil.isJustShutdown()) {
+            checkKeyGuardable();
         }
-
-        checkKeyGuardable();
         return START_STICKY;
+
     }
 
     /**
@@ -83,7 +69,7 @@ public class KeyGuardService extends Service {
      */
     private void checkKeyGuardable() {
         // wifi是否可用
-        if (wifiUtil.isWifiEnable()) {
+        if (wifiUtil.isWifiConnected()) {
             // 连接的wifi是否与pres里保存的ssid是否一致，是就说明是在信任的区域内，不用解锁
             if (presUtil.isTrustSsid(wifiUtil.getCurrentWifiSSID())) {
                 LogUtil.i(TAG, "wifi ssid have save");
@@ -108,7 +94,6 @@ public class KeyGuardService extends Service {
             keyGuadrdUtil.disableKeyGuard();
             isLock = false;
             LogUtil.i(TAG, "isLock ======= " + String.valueOf(isLock));
-
         }
     }
 
@@ -130,10 +115,39 @@ public class KeyGuardService extends Service {
     public void onDestroy() {
         LogUtil.w(TAG, "onDestroy");
         reEnableKeyGuard();
-
-        unregisterReceiver(stateRecevier);
+        unregisterReceiver(userPresentReceiver);
         super.onDestroy();
     }
+
+    private final Runnable runDisableKeyguard = new Runnable() {
+        public void run() {
+            disableKeyGuard();
+        }
+    };
+
+    private final BroadcastReceiver userPresentReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
+                LogUtil.w(TAG, "mUserPresentReceiver onreceive");
+
+                if (wifiUtil.isWifiConnected() && presUtil.isTrustSsid(wifiUtil.getCurrentWifiSSID())) {
+                    // 如果在信任wifi的情况下还需要解锁，是的话就为异常情况
+                    LogUtil.w(TAG, "inKeyguardRestrictedInputMode ");
+
+                    // 出现异常时disableKeyguard是无作用的，需要等手动开锁后，重新显示解锁界面后，在隐藏，才有效果
+                    reEnableKeyGuard();
+                    mHandler.postDelayed(runDisableKeyguard, 300);
+                }
+
+                // 开机启动后解锁生效信任wifi的功能
+                if (presUtil.isJustShutdown()) {
+                    checkKeyGuardable();
+                    presUtil.haveStartUp();
+                }
+            }
+        }
+    };
 
     @Override
     public IBinder onBind(Intent intent) {

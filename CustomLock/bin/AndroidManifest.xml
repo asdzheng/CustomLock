@@ -18,7 +18,7 @@
     <application
         android:name="com.asdzheng.customlock.MyApplication"
         android:allowBackup="false"
-        android:icon="@drawable/wifi_icon"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" 
         android:persistent="true"
@@ -39,11 +39,9 @@
 
         <receiver android:name="com.asdzheng.customlock.receiver.DiffStateReceiver" >
             <intent-filter>
-                <action android:name="android.net.wifi.supplicant.CONNECTION_CHANGE" />
-                <action android:name="android.net.wifi.RSSI_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGE"/>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.ACTION_SHUTDOWN"/>
-                <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
     </application>

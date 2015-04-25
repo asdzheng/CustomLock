@@ -7,7 +7,6 @@ package com.asdzheng.customlock.util;
 import android.util.Log;
 
 /**
- * @author [zWX232618/郑加波] 2015-4-13
  */
 public class LogUtil {
 

@@ -11,7 +11,6 @@ import android.content.Context;
 import com.asdzheng.customlock.MyApplication;
 
 /**
- * @author [zWX232618/郑加波] 2015-3-31
  */
 public class KeyGuardUtil {
 
@@ -47,7 +46,7 @@ public class KeyGuardUtil {
         lock.reenableKeyguard();
     }
 
-    public boolean inKeyguardRestrictedInputMode() {
+    public synchronized boolean inKeyguardRestrictedInputMode() {
         return manager.inKeyguardRestrictedInputMode();
     }
 

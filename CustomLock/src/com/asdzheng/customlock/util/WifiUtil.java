@@ -16,7 +16,6 @@ import android.net.wifi.WifiManager;
 import com.asdzheng.customlock.MyApplication;
 
 /**
- * @author [zWX232618/郑加波] 2015-4-14
  */
 public class WifiUtil {
 
@@ -31,13 +30,14 @@ public class WifiUtil {
     private WifiUtil() {
         wifiManager = (WifiManager) MyApplication.getContext().getSystemService(
                 Context.WIFI_SERVICE);
+
         connectManager = (ConnectivityManager) MyApplication.getContext().getSystemService(
                 Context.CONNECTIVITY_SERVICE);
 
         state = connectManager.getNetworkInfo(connectManager.TYPE_WIFI).getState();
     }
 
-    public static WifiUtil getInstance() {
+    public synchronized static WifiUtil getInstance() {
         if (wifiUtil == null) {
             wifiUtil = new WifiUtil();
         }
@@ -46,11 +46,16 @@ public class WifiUtil {
     }
 
     // 是否wifi已经开启，并且已经连接上可用wifi
-    public boolean isWifiEnable() {
+    public boolean isWifiConnected() {
         LogUtil.w("WifiUtil", state.toString());
 
         return wifiManager.isWifiEnabled()
                 && (state == State.CONNECTED || state == State.CONNECTING);
+    }
+
+    // wifi是否已打开
+    public boolean isWifiEnabled() {
+        return wifiManager.isWifiEnabled();
     }
 
     public void setNewWorkState(State state) {

@@ -26,14 +26,15 @@ import com.asdzheng.customlock.view.ToggleButton;
 import com.asdzheng.customlock.view.ToggleButton.OnToggleChanged;
 
 /**
- * @author [zWX232618/郑加波] 2015-4-8
  */
 public class WifiAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private List<WifiConfiguration> saveWifis;
     private List<ScanResult> results;
+    // 附件可用wifi的ssid
+    private List<String> rangeSsids;
 
-    Context context;
+    private Context context;
 
     public WifiAdapter(Context context, List<WifiConfiguration> saveWifis,
             List<ScanResult> rangeWifis) {
@@ -41,6 +42,9 @@ public class WifiAdapter extends BaseAdapter {
         this.saveWifis = saveWifis;
         this.results = rangeWifis;
         this.context = context;
+
+        rangeSsids = new ArrayList<String>();
+        addAllRangeSsid();
     }
 
     @Override
@@ -60,27 +64,26 @@ public class WifiAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        View view = null;
+        View view = convertView;
         ViewHolder holder = null;
 
-        if (convertView == null) {
-            view = inflater.inflate(R.layout.item_wifi_list, null);
+        if (view == null) {
+            view = inflater.inflate(R.layout.item_wifi_list, parent, false);
             holder = new ViewHolder();
-            holder.textView = (TextView) view.findViewById(R.id.textView);
-            holder.btn = (ToggleButton) view.findViewById(R.id.tbtn_slide);
-            holder.imageView = (ImageView) view.findViewById(R.id.imageView);
+            holder.textView = (TextView) view.findViewById(R.id.tv_ssid);
+            holder.btn = (ToggleButton) view.findViewById(R.id.toggle_switch);
+            holder.imageView = (ImageView) view.findViewById(R.id.iv_wifi_level);
             view.setTag(holder);
-        } else {
-            view = convertView;
-            holder = (ViewHolder) view.getTag();
         }
+
+        holder = (ViewHolder) view.getTag();
 
         WifiConfiguration saveWifiInfo = (WifiConfiguration) getItem(position);
         final String ssid = saveWifiInfo.SSID;
-
-        haveSaveWIfi(holder, ssid);
-
         holder.textView.setText(ssid);
+
+        setWifiLevelImage(holder, ssid);
+
         if (PrefencesUtil.getInstance().isTrustSsid(ssid)) {
             holder.btn.setToggleOn();
         } else {
@@ -106,20 +109,11 @@ public class WifiAdapter extends BaseAdapter {
         return view;
     }
 
-    private void haveSaveWIfi(ViewHolder holder, String ssid) {
-        List<String> rangeSsids = new ArrayList<String>();
-        if (results == null || results.isEmpty()) {
-            return;
-        } else {
-            for (ScanResult result : results) {
-                rangeSsids.add(PrefencesUtil.getInstance().removeQuotes(result.SSID));
-            }
-        }
+    private void setWifiLevelImage(ViewHolder holder, String ssid) {
 
-        if (rangeSsids.contains(PrefencesUtil.getInstance().removeQuotes(ssid))) {
-            // holder.imageView.setImageResource(R.drawable.wifi_save_range);
-            ScanResult result = results.get(rangeSsids.indexOf(PrefencesUtil.getInstance()
-                    .removeQuotes(ssid)));
+        // 找出已经成功连接的wifi
+        if (rangeSsids.contains(removeQuotes(ssid))) {
+            ScanResult result = results.get(rangeSsids.indexOf(removeQuotes(ssid)));
             int level = result.level;
             // 根据获得的信号强度发送信息
             if (level <= 0 && level >= -50) {
@@ -133,8 +127,29 @@ public class WifiAdapter extends BaseAdapter {
             }
 
         } else {
-            holder.imageView.setImageResource(R.drawable.wifi_level5);
+            holder.imageView.setImageResource(R.drawable.wifi_less);
         }
+    }
+
+    public void scanResultsChange(List<ScanResult> results) {
+        this.results.clear();
+        this.results.addAll(results);
+        addAllRangeSsid();
+        notifyDataSetChanged();
+    }
+
+    private void addAllRangeSsid() {
+        if (results.isEmpty()) {
+            rangeSsids.clear();
+            return;
+        }
+        for (ScanResult result : results) {
+            rangeSsids.add(removeQuotes(result.SSID));
+        }
+    }
+
+    private String removeQuotes(String ssid) {
+        return PrefencesUtil.getInstance().removeQuotes(ssid);
     }
 
     private static class ViewHolder {
@@ -142,4 +157,5 @@ public class WifiAdapter extends BaseAdapter {
         ToggleButton btn;
         ImageView imageView;
     }
+
 }

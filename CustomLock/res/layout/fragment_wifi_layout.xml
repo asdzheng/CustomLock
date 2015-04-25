@@ -11,10 +11,10 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
+        android:paddingBottom="15dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingTop="60dp"
-        android:paddingBottom="15dp"
         android:scrollbarStyle="outsideOverlay"
         tools:listitem="@layout/list_item_card" />
 

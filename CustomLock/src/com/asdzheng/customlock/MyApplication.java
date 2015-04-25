@@ -8,7 +8,6 @@ import android.app.Application;
 import android.content.Context;
 
 /**
- * @author [zWX232618/郑加波] 2015-4-7
  */
 public class MyApplication extends Application {
 

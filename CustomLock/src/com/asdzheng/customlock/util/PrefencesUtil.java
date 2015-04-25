@@ -10,12 +10,12 @@ import android.content.SharedPreferences;
 import com.asdzheng.customlock.MyApplication;
 
 /**
- * // * @author [zWX232618/郑加波] 2015-3-31
  */
 public class PrefencesUtil {
 
     public static final String PREFENCE_NAME = "Trust_Wifi";
-    public static final String SYSTEM_SHUTDOWN = "Shutdown_10086";
+    public static final String SYSTEM_SHUTDOWN = "shutdown";
+    public static final String SYSTEM_EXCEPTION = "system_exception";
 
     private SharedPreferences mSharePres;
 
@@ -49,12 +49,18 @@ public class PrefencesUtil {
         return containkey(ssid);
     }
 
-    public void addSsid(String ssid) {
+    public synchronized void addSsid(String ssid) {
         putBoolean(removeQuotes(ssid), true);
     }
 
-    public void removeSsid(String ssid) {
+    public synchronized void removeSsid(String ssid) {
         removeKey(removeQuotes(ssid));
+    }
+
+    public void shutDown() {
+        LogUtil.e("PrefencesUtil", "shutdown");
+
+        putBoolean(SYSTEM_SHUTDOWN, true);
     }
 
     /**
@@ -62,26 +68,20 @@ public class PrefencesUtil {
      * 2 --> wifi状态改变，如移除wifi区域，也有可能出现reenable或者disable失效
      * ||||||失效后需要重新显示锁屏界面，然后再隐藏
      */
-    public void systemException() {
-        LogUtil.e("PrefencesUtil", "systemException");
-
-        putBoolean(SYSTEM_SHUTDOWN, true);
-    }
-
-    public boolean isSystemException() {
-        LogUtil.e("PrefencesUtil", "isSystemException");
+    public boolean isJustShutdown() {
+        LogUtil.e("PrefencesUtil", "isJustShutdown");
 
         return containkey(SYSTEM_SHUTDOWN);
     }
 
-    public void systemNormal() {
-        LogUtil.e("PrefencesUtil", "SYSTEM_NORMAL");
+    public void haveStartUp() {
+        LogUtil.e("PrefencesUtil", "haveStartUp");
 
         removeKey(SYSTEM_SHUTDOWN);
     }
 
     /**
-     * 有些手机扫描出来的Wifi信息带有双引号，需要去掉
+     * 有些手机扫描出来的Wifi信息带有双引号，有些没有，统一去掉
      */
     public String removeQuotes(String ssid) {
         if (ssid == null || ssid.isEmpty()) {

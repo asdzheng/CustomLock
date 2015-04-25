@@ -14,7 +14,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_card_layout);
+        setContentView(R.layout.activity_layout);
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction().add(R.id.container, new WifiFragment())
@@ -34,7 +34,7 @@ public class MainActivity extends ActionBarActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(R.string.dialog_message).setTitle(R.string.app_name);
             builder.setPositiveButton(R.string.dialog_ok, null);
-            builder.setIcon(R.drawable.wifi_icon);
+            builder.setIcon(R.drawable.logo);
 
             AlertDialog dialog = builder.create();
             dialog.show();
