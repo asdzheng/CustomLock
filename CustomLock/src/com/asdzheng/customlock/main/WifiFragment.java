@@ -1,7 +1,6 @@
 
 package com.asdzheng.customlock.main;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Fragment;
@@ -15,10 +14,11 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.asdzheng.customlock.R;
@@ -27,10 +27,11 @@ import com.asdzheng.customlock.util.WifiUtil;
 
 public class WifiFragment extends Fragment {
 
-    private ListView wifiListView;
+    private RecyclerView wifiListView;
+
     private WifiUtil wifiUtil;
     private List<ScanResult> rangeWifis;
-    private WifiAdapter adapter;
+    private RecyclerWifiAdapter adapter;
     private List<WifiConfiguration> saveWifis;
 
     public WifiFragment() {
@@ -39,9 +40,11 @@ public class WifiFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_wifi_layout, container, false);
-        wifiListView = (ListView) rootView.findViewById(R.id.cards_list);
+        wifiListView = (RecyclerView) rootView.findViewById(R.id.recycler_list_wifi);
+        wifiListView.setLayoutManager(new LinearLayoutManager(getActivity()));// 这里用线性显示
+
         wifiUtil = WifiUtil.getInstance();
-        addOpenWifiReceiver();
+        addWifiStateReceiver();
         checkWifiHaveOpen();
         return rootView;
     }
@@ -56,14 +59,21 @@ public class WifiFragment extends Fragment {
     }
 
     private void initData() {
-        wifiListView.setAdapter(createAdapter());
+        rangeWifis = wifiUtil.getScanResults();
+        saveWifis = wifiUtil.getWifiConfigNeworks();
+        adapter = new RecyclerWifiAdapter(getActivity(), saveWifis, rangeWifis);
+        wifiListView.setAdapter(adapter);
+
+        startService();
+    }
+
+    private void startService() {
         Intent i = new Intent(getActivity(), KeyGuardService.class);
         getActivity().startService(i);
-
     }
 
     // 注册wifi信号的广播接收器
-    private void addOpenWifiReceiver() {
+    private void addWifiStateReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
@@ -77,32 +87,24 @@ public class WifiFragment extends Fragment {
         wifiUtil.setWifiEnabled(true);
     }
 
-    private WifiAdapter createAdapter() {
-        rangeWifis = new ArrayList<ScanResult>();
-        rangeWifis = wifiUtil.getScanResults();
-
-        saveWifis = wifiUtil.getWifiConfigNeworks();
-        adapter = new WifiAdapter(getActivity(), saveWifis, rangeWifis);
-
-        return adapter;
-    }
-
     private BroadcastReceiver wifiConnectReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
-                if (wifiUtil.isWifiEnabled()) {
+                if (wifiUtil.isWifiEnabled() && adapter == null) {
                     initData();
                 }
 
             } else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 NetworkInfo networkInfo = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                 State state = networkInfo.getState();
-                if (state == State.CONNECTED || state == State.DISCONNECTED) {
-                    if (adapter != null) {
+                if (adapter != null) {
+                    if (state == State.CONNECTED) {
                         // 更新wifi信号的状态
                         adapter.scanResultsChange(wifiUtil.getScanResults());
+                    } else if (state == State.DISCONNECTED) {
+                        adapter.updateWifiDisconnect();
                     }
                 }
             }

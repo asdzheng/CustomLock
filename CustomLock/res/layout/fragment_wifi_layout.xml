@@ -1,21 +1,18 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_grey" >
 
-    <ListView
-        android:id="@+id/cards_list"
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/recycler_list_wifi"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="8dp"
-        android:paddingBottom="15dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="60dp"
-        android:scrollbarStyle="outsideOverlay"
-        tools:listitem="@layout/list_item_card" />
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" 
+        android:scrollbars="vertical"
+         android:paddingTop="50dp"
+        />
 
-</LinearLayout>
+</RelativeLayout>

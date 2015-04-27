@@ -1,41 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:toggle="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res/com.asdzheng.customlock"
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:layout_margin="10dp"
-    android:background="@drawable/selectable_background"
-    android:descendantFocusability="blocksDescendants"
-    android:orientation="horizontal" >
+    android:layout_height="80dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="8dp"
+    app:cardBackgroundColor="@android:color/white"
+    app:cardElevation="2dp"
+    card_view:cardCornerRadius="4dp" >
 
-    <ImageView
-        android:id="@+id/iv_wifi_level"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="2"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:src="@drawable/wifi_less" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="horizontal" >
 
-    <TextView
-        android:id="@+id/tv_ssid"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="5"
-        android:text="TextView" />
+        <ImageView
+            android:id="@+id/iv_wifi_level"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="2"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:src="@drawable/wifi_less" />
 
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="2" >
-        <com.asdzheng.customlock.view.ToggleButton
-            android:id="@+id/toggle_switch"
-            android:layout_width="65dp"
-            android:layout_height="30dp"
-            android:layout_centerInParent="true" >
-        </com.asdzheng.customlock.view.ToggleButton>
-</RelativeLayout>
+        <TextView
+            android:id="@+id/tv_ssid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="5"
+            android:text="TextView" />
 
-</LinearLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2" >
+
+            <com.asdzheng.customlock.view.ToggleButton
+                android:id="@+id/toggle_switch"
+                android:layout_width="68dp"
+                android:layout_height="32dp"
+                android:layout_centerInParent="true" >
+            </com.asdzheng.customlock.view.ToggleButton>
+        </RelativeLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

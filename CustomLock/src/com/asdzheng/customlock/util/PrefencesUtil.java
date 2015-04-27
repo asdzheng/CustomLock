@@ -38,7 +38,7 @@ public class PrefencesUtil {
     }
 
     private void removeKey(String key) {
-        mSharePres.edit().remove(removeQuotes(key)).commit();
+        mSharePres.edit().remove(key).commit();
     }
 
     private boolean containkey(String key) {
@@ -50,11 +50,11 @@ public class PrefencesUtil {
     }
 
     public synchronized void addSsid(String ssid) {
-        putBoolean(removeQuotes(ssid), true);
+        putBoolean((ssid), true);
     }
 
     public synchronized void removeSsid(String ssid) {
-        removeKey(removeQuotes(ssid));
+        removeKey((ssid));
     }
 
     public void shutDown() {

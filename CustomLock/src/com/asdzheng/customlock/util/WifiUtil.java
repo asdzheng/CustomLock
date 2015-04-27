@@ -4,6 +4,7 @@
 
 package com.asdzheng.customlock.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -71,7 +72,8 @@ public class WifiUtil {
     }
 
     public List<ScanResult> getScanResults() {
-        return wifiManager.getScanResults();
+        List<ScanResult> results = wifiManager.getScanResults();
+        return results == null ? new ArrayList<ScanResult>() : results;
     }
 
     public List<WifiConfiguration> getWifiConfigNeworks() {
