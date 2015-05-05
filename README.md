@@ -1,12 +1,13 @@
-##信任wifi##
 
 ![信任wifi][1]
 
-这个app是一个系统工具，可以设置一个或多个我们信任的wifi热点(如家里的，公司里的)，设置成功后，只要手机连着的wifi是已信任的，点亮屏幕就不用解锁。（暂时只支持隐藏图形锁）
+[豌豆荚下载地址][2]
+
+这个app是一个系统工具，可以设置一个或多个我们信任的wifi热点(如家里的，公司里的)，设置成功后，只要手机连着的wifi是已信任的，以后点亮屏幕都不用先解锁。（暂时只支持隐藏图形锁）
 
 ### 屏幕截图 ###
 
-![截图][2]
+![截图][3]
 
 这个app只有一个界面，列出了你手机已经连接过的wifi热点，只要点击右边的按钮选中就可以。左边的图标是显示当前此wifi热点的信号强度。
 
@@ -16,11 +17,11 @@
 
 ###使用控件###
 
-本app的开关按钮使用开源控件：[ToggleButton][3]
+本app的开关按钮使用开源控件：[ToggleButton][4]
 
 ###项目构建环境###
 
-eclips
+eclipse
 
 最新sdk
 
@@ -40,7 +41,7 @@ eclips
 ---
 
 
-
   [1]: http://img.blog.csdn.net/20150503172344944?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYXNkemhlbmc=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center
-  [2]: http://img.blog.csdn.net/20150503172851890?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYXNkemhlbmc=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center
-  [3]: https://github.com/zcweng/ToggleButton
+  [2]: http://www.wandoujia.com/apps/com.asdzheng.customlock
+  [3]: http://img.blog.csdn.net/20150503172851890?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYXNkemhlbmc=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center
+  [4]: https://github.com/zcweng/ToggleButto
