@@ -116,6 +116,8 @@ public class KeyGuardService extends Service {
         LogUtil.w(TAG, "onDestroy");
         reEnableKeyGuard();
         unregisterReceiver(userPresentReceiver);
+        mHandler.removeCallbacks(runDisableKeyguard);
+
         super.onDestroy();
     }
 
